@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">iReport</string>
+    <string name="upload_an_image">Upload Report</string>
+    <string name="camera">camera</string>
+    <string name="navigation_drawer_open">Open</string>
+    <string name="navigation_drawer_close">Close</string>
+</resources>
