@@ -34,7 +34,15 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import org.angmarch.views.NiceSpinner;
+import org.angmarch.views.OnSpinnerItemSelectedListener;
+
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Vector;
 
 import maes.tech.intentanim.CustomIntent;
 
@@ -45,7 +53,7 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
     private ProgressDialog mLoginProgress;
     GraphView graph;
     private FirebaseAuth mAuth;
-    Spinner spinner;
+    NiceSpinner spinner;
     private DatabaseReference mUserDatabase, mDatabase;
     TextView emailheader, ageheader, nameheader;
     ImageView edit;
@@ -89,6 +97,7 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
         String uid = current_user.getUid();
         mUserDatabase=FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("Medicines");
 
+        final HashMap<String,  Double > Med=new HashMap<>();
 
         //GET ALL DATES
         mUserDatabase.addValueEventListener(new ValueEventListener() {
@@ -100,11 +109,43 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
 //                    Toast.makeText(MainActivity2.this, "DATES:"+dataSnapshot.getKey(), Toast.LENGTH_SHORT).show();
 
                     for (DataSnapshot childDataSnapshot2 : childDataSnapshot.getChildren()) {
-//                        Toast.makeText(MainActivity2.this, "MEDICINE NAME"+childDataSnapshot2.getKey(), Toast.LENGTH_SHORT).show();
+                        //   Toast.makeText(MainActivity2.this, "MEDICINE NAME"+childDataSnapshot2.getKey(), Toast.LENGTH_SHORT).show();
                         arrayList.add(childDataSnapshot2.getKey());
-//                        Toast.makeText(MainActivity2.this, "VALUES"+childDataSnapshot2.getValue(), Toast.LENGTH_SHORT).show();
+//                        v.add(Double.parseDouble(childDataSnapshot2.getValue().toString()));
+
+                        int space=childDataSnapshot2.getValue().toString().indexOf(" ");
+
+                        String doubl=childDataSnapshot2.getValue().toString().substring(0,space)
+                                .replaceAll("-",".")
+                                .replaceAll("_",".")
+                                .replaceAll(",",".")
+                                .replaceAll("\'",".")
+                                .replaceAll("[a-z]","")
+                                .replaceAll("[A-Z]","")
+                                .replaceAll("\\(", ".")
+                                .replaceAll("\\)", ".")
+                                .replaceAll(" ", ".")
+                                .replaceAll(",", ".")
+                                .replaceAll("\\[", ".")
+                                .replaceAll("\\]", ".")
+                                .replaceAll("@", ".")
+                                .replaceAll("‘", "")
+                                .replaceAll("\\{", ".")
+                                .replaceAll("\\}", ".");
+                         Double dou=0.0;
+                            try{ dou=Double.parseDouble(doubl);}catch (Exception e){
+                                Toast.makeText(MainActivity2.this, "Unable", Toast.LENGTH_SHORT).show();
+                            }
+                        Med.put(childDataSnapshot2.getKey(),dou);
+
+                        //Toast.makeText(MainActivity2.this, "VALUES"+doubl, Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(MainActivity2.this, "UNITS"+childDataSnapshot2.getValue().toString().substring(space), Toast.LENGTH_SHORT).show();
+
                     }
-                    }
+
+                    // Toast.makeText(MainActivity2.this, "OVER", Toast.LENGTH_SHORT).show();
+
+                }
 
             }
             @Override
@@ -114,26 +155,22 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
         });
 
 
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, arrayList);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
-        spinner.setAdapter(arrayAdapter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//        List<String> dataset = new LinkedList<>(arrayList);
+        spinner.attachDataSource(arrayList);
+
+
+        spinner.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String key = parent.getItemAtPosition(position).toString();
+            public void onItemSelected(NiceSpinner parent, View view, int position, long id) {
+                String item = parent.getItemAtPosition(position).toString();
+
                 LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>(new DataPoint[]{
                         new DataPoint(0, 1)
                 });
                 graph.addSeries(series);
 
             }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
         });
-
 
     }
 

@@ -8,6 +8,10 @@ android {
         // but continue the build even when errors are found:
         abortOnError false
     }
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
     compileSdkVersion 29
     buildToolsVersion '29.0.2'
     defaultConfig {
@@ -116,6 +120,7 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.firebase:firebase-client-android:2.5.2'
     implementation 'com.jjoe64:graphview:4.2.2'
+    implementation 'com.github.arcadefire:nice-spinner:1.4.4'
 }
 
 apply plugin: 'com.google.gms.google-services'
