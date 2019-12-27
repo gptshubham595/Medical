@@ -9,12 +9,6 @@ import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-
-import androidx.core.content.ContextCompat;
-import androidx.core.view.ViewCompat;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -25,33 +19,46 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-//import com.google.android.gms.ads.AdView;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.googlecode.tesseract.android.TessBaseAPI;
-import com.iitg.reportscanner.R;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
+import java.util.HashMap;
+
+import maes.tech.intentanim.CustomIntent;
+
+//import com.google.android.gms.ads.AdView;
 
 public class Recognizer extends AppCompatActivity implements Toolbar.OnMenuItemClickListener {
     private Toolbar toolbar;
     private EditText search;
     private TextView textView;
+    String FINALTOSTORE;
     private String textScanned;
     FloatingActionButton next;
-    static boolean check=false;
+    static boolean check = false;
     ProgressDialog progressCopy, progressOcr;
     TessBaseAPI baseApi;
     AsyncTask<Void, Void, Void> copy = new copyTask();
@@ -61,7 +68,7 @@ public class Recognizer extends AppCompatActivity implements Toolbar.OnMenuItemC
 
     private FirebaseAuth mAuth;
 
-    private DatabaseReference mUserDatabase,mDatabase;
+    private DatabaseReference mUserDatabase, mDatabase;
 
     private static final String DATA_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/com.iitg.reportscanner/";
 
@@ -69,31 +76,22 @@ public class Recognizer extends AppCompatActivity implements Toolbar.OnMenuItemC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recognizer);
-        next=findViewById(R.id.next);
+        next = findViewById(R.id.next);
         mAuth = FirebaseAuth.getInstance();
-        mLoginProgress = new ProgressDialog(this,R.style.dialog);
+        mLoginProgress = new ProgressDialog(this, R.style.dialog);
         mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
+
         Toast.makeText(Recognizer.this, "WAIT CHECK IF Texts are Correct", Toast.LENGTH_LONG).show();
         next.setFocusable(false);
         next.setClickable(true);
-        next.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                            Intent i=new Intent(getApplicationContext(),Analyzer.class);
-                            i.putExtra("ocr",textView.getText().toString());
-                            startActivity(i);
 
-                    }
-                }
-        );
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setOnMenuItemClickListener(this);
         ViewCompat.setElevation(toolbar, 10);
         ViewCompat.setElevation((LinearLayout) findViewById(R.id.extension), 10);
-        textView = (TextView) findViewById(R.id.textExtracted);
+        textView = findViewById(R.id.textExtracted);
         textView.setMovementMethod(new ScrollingMovementMethod());
         search = (EditText) findViewById(R.id.search_text);
         // Setting progress dialog for copy job.
@@ -126,7 +124,12 @@ public class Recognizer extends AppCompatActivity implements Toolbar.OnMenuItemC
             public void afterTextChanged(Editable editable) {
                 String ett = search.getText().toString().replaceAll("\n", " ");
                 String tvt = textView.getText().toString().replaceAll("\n", " ");
-                textView.setText(textView.getText().toString());
+
+                FINALTOSTORE = textView.getText().toString();
+
+                textView.setText(FINALTOSTORE);
+
+
                 if (!ett.toString().isEmpty()) {
                     int ofe = tvt.toLowerCase().indexOf(ett.toLowerCase(), 0);
                     Spannable WordtoSpan = new SpannableString(textView.getText());
@@ -149,6 +152,101 @@ public class Recognizer extends AppCompatActivity implements Toolbar.OnMenuItemC
 
 
     }
+
+
+    boolean isdig(char str) {
+        if (str >= '0' && str <= '9')
+            return true;
+        return false;
+    }
+
+    private void sendDataToFirebase(String finaltostore) {
+
+        int f = finaltostore.indexOf("\n");
+        int s;
+        int count = 0;
+
+        for (int i = 0; i < finaltostore.length(); i++)
+            if (finaltostore.charAt(i) == '\n') count++;
+
+        String data;
+
+        finaltostore += "\n";
+        HashMap<String, String> userMap = new HashMap<>();
+
+        for (int i = 0; i < count; i++) {
+            s = finaltostore.indexOf("\n", f + 1);
+            data = finaltostore.substring(f, s);
+            f = s;
+            try {
+                StringBuilder datarev = new StringBuilder(data);
+                datarev.reverse().toString();
+                int j = 0;
+                for (j = 0; j < datarev.toString().length(); j++) {
+                    if (isdig(datarev.toString().charAt(j))) {
+                        break;
+                    }
+                }
+                for (; j < datarev.toString().length(); j++) {
+                    if (datarev.toString().charAt(j) == ' ') {
+                        break;
+                    }
+                }
+                String glucose = data.split("[0-9]")[0];
+                String glucoseamt = data.substring(glucose.length());
+                StringBuilder glu = new StringBuilder(datarev.toString().substring(j));
+                glu.reverse().toString().trim();
+                final String g = glu.toString().substring(1);
+                final String key;
+                Log.e("WRITING VALUES", data);
+                if (!glucoseamt.equals("")) {
+//                Toast.makeText(this, g + " : "+glucoseamt , Toast.LENGTH_SHORT).show();
+                    key = g.replaceAll("\\(", "")
+                            .replaceAll("\\)", "")
+                            .replaceAll(" ", "")
+                            .replaceAll(",", "")
+                            .replaceAll("\\[", "")
+                            .replaceAll("\\]", "")
+                            .replaceAll("@", "")
+                            .replaceAll("\\{", "")
+                            .replaceAll("\\}", "");
+
+
+
+
+                    userMap.put(key+"", ""+glucoseamt);
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Failed for " + i, Toast.LENGTH_SHORT).show();
+            }
+
+
+        }
+
+        FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = current_user.getUid();
+        long millis=System.currentTimeMillis();
+        java.sql.Date date=new java.sql.Date(millis);
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("Medicines").child(""+date);
+        try{
+        mDatabase.setValue(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+
+                if (task.isSuccessful()) {
+
+                    Toast.makeText(Recognizer.this, "Done", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });}catch (Exception e){
+        Intent i = new Intent(getApplicationContext(), MainActivity2.class);
+        startActivity(i);
+        CustomIntent.customType(Recognizer.this, "fadein-to-fadeout");
+    }}
+
 
     private void recognizeText() {
         String language = "";
@@ -241,7 +339,17 @@ public class Recognizer extends AppCompatActivity implements Toolbar.OnMenuItemC
             super.onPostExecute(aVoid);
             progressOcr.cancel();
             textView.setText(textScanned);
-            check=true;
+            next.setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            sendDataToFirebase(textScanned);
+                        }
+                    }
+            );
+
+
+            check = true;
             next.setFocusable(true);
 
 

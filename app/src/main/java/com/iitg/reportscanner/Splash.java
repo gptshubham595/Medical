@@ -17,6 +17,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.iitg.reportscanner.spla.Splash1;
 
+import maes.tech.intentanim.CustomIntent;
+
 public class Splash extends AppCompatActivity {
     private ProgressDialog mLoginProgress;
 
@@ -47,6 +49,7 @@ public class Splash extends AppCompatActivity {
               //  Intent i=new Intent(getApplicationContext(), Splash1.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(i);
+                    CustomIntent.customType(Splash.this,"fadein-to-fadeout");
             }}
         }, 5000);
     }

@@ -31,7 +31,7 @@ public class Splash1 extends AppCompatActivity {
     private ViewPagerIndicator mViewPagerIndicator;
     private ViewPager mViewPager;
     GifImageView data,data2,data3;
-    TextView txt;
+    TextView txt,nxt1;
     ImageView nxt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +42,22 @@ public class Splash1 extends AppCompatActivity {
         data3=findViewById(R.id.data3);
         txt=findViewById(R.id.txt);
         nxt=findViewById(R.id.next);
+        nxt1=findViewById(R.id.skip);
         mViewPagerIndicator = (ViewPagerIndicator) findViewById(R.id.view_pager_indicator);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
 
         mViewPager.setAdapter(new MyPagerAdapter());
         mViewPagerIndicator.setupWithViewPager(mViewPager);
         mViewPagerIndicator.addOnPageChangeListener(mOnPageChangeListener);
+
+        nxt1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i=new Intent(getApplicationContext(), Login.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(i);
+            }
+        });
     }
     private
     class MyPagerAdapter

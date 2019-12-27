@@ -22,6 +22,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.iitg.reportscanner.R;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import maes.tech.intentanim.CustomIntent;
+
 
 public class CropAndRotate extends AppCompatActivity implements View.OnClickListener, Toolbar.OnMenuItemClickListener {
     private Toolbar toolbar;
@@ -67,6 +69,7 @@ public class CropAndRotate extends AppCompatActivity implements View.OnClickList
                     croppedImage = result.getBitmap();
                     Intent intent = new Intent(CropAndRotate.this, Binarization.class);
                     startActivity(intent);
+                    CustomIntent.customType(CropAndRotate.this,"fadein-to-fadeout");
                 }
             });
             cropImageView.getCroppedImageAsync();

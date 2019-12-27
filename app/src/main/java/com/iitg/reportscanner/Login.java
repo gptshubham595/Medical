@@ -1,16 +1,17 @@
 package com.iitg.reportscanner;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -22,37 +23,45 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.libizo.CustomEditText;
 
-import java.util.HashMap;
+import maes.tech.intentanim.CustomIntent;
 
 public class Login extends AppCompatActivity {
     private ProgressDialog mLoginProgress;
 
     private FirebaseAuth mAuth;
 
-    private DatabaseReference mUserDatabase,mDatabase;
-    AppCompatButton login,register;
-    EditText email,pswd;
+    private DatabaseReference mUserDatabase, mDatabase;
+    AppCompatButton login, register;
+    EditText email, pswd;
+    private ProgressBar loginProgressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         FirebaseApp.initializeApp(this);
         mAuth = FirebaseAuth.getInstance();
-        mLoginProgress = new ProgressDialog(this,R.style.dialog);
+        mLoginProgress = new ProgressDialog(this, R.style.dialog);
+        loginProgressBar = findViewById(R.id.progressLogin);
 
         mUserDatabase = FirebaseDatabase.getInstance().getReference();
-        mUserDatabase=mUserDatabase.child("Users");
+        mUserDatabase = mUserDatabase.child("Users");
 
-        email=findViewById(R.id.email);
-        pswd=findViewById(R.id.password);
+        email = findViewById(R.id.email);
+        pswd = findViewById(R.id.password);
 
-        login=findViewById(R.id.login);
+        login = findViewById(R.id.login);
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loginUser(email.getText().toString(),pswd.getText().toString());
+                if (TextUtils.isEmpty(email.getText().toString())) email.setError("Enter Email");
+                if (TextUtils.isEmpty(pswd.getText().toString())) pswd.setError("Enter Password");
+                if (pswd.getText().toString().length() < 6) pswd.setError("Min 6 digits");
+                if (!TextUtils.isEmpty(email.getText().toString()) && !TextUtils.isEmpty(pswd.getText().toString()) && pswd.getText().toString().length() >= 6) {
+                    loginProgressBar.setVisibility(View.VISIBLE);
+                    loginUser(email.getText().toString(), pswd.getText().toString());
+                }
             }
         });
 
@@ -60,8 +69,9 @@ public class Login extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent i=new Intent(getApplicationContext(), Register.class);
+                        Intent i = new Intent(getApplicationContext(), Register.class);
                         startActivity(i);
+                        CustomIntent.customType(Login.this,"fadein-to-fadeout");
                     }
                 }
         );
@@ -69,8 +79,9 @@ public class Login extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent i=new Intent(getApplicationContext(), Forgot.class);
+                        Intent i = new Intent(getApplicationContext(), Forgot.class);
                         startActivity(i);
+                        CustomIntent.customType(Login.this,"fadein-to-fadeout");
                     }
                 }
         );
@@ -78,7 +89,7 @@ public class Login extends AppCompatActivity {
 
 
     private void loginUser(String email, String password) {
-        Toast.makeText(this, email, Toast.LENGTH_SHORT).show();
+        //   Toast.makeText(this, email, Toast.LENGTH_SHORT).show();
         try {
             mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
@@ -98,18 +109,19 @@ public class Login extends AppCompatActivity {
                                     Intent mainIntent = new Intent(getApplicationContext(), MainActivity2.class);
                                     mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(mainIntent);
+                                    CustomIntent.customType(Login.this,"fadein-to-fadeout");
                                 } else {
                                     Toast.makeText(getApplicationContext(), "Please Verify Email or enter correct details", Toast.LENGTH_SHORT).show();
                                 }
                                 finish();
-
+                                loginProgressBar.setVisibility(View.INVISIBLE);
 
                             }
                         });
 
 
                     } else {
-
+                        loginProgressBar.setVisibility(View.INVISIBLE);
                         mLoginProgress.hide();
 
                         String task_result = task.getException().getMessage().toString();
@@ -120,7 +132,27 @@ public class Login extends AppCompatActivity {
 
                 }
             });
-        }catch (Exception e){e.printStackTrace();}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser curUser = mAuth.getCurrentUser();
+        //If user already logged in send back to Main
+        if (curUser != null) {
+            sendToMain();
+        }
+
+    }
+
+    private void sendToMain() {
+        Toast.makeText(this, "Already Logged In", Toast.LENGTH_SHORT).show();
+        Intent main = new Intent(Login.this, MainActivity2.class);
+        main.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(main);
+        CustomIntent.customType(Login.this,"fadein-to-fadeout");
+    }
 }

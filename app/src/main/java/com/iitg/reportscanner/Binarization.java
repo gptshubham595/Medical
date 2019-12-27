@@ -31,6 +31,8 @@ import com.iitg.reportscanner.R;
 
 import java.util.Arrays;
 
+import maes.tech.intentanim.CustomIntent;
+
 
 public class Binarization extends AppCompatActivity implements View.OnClickListener, AppCompatSeekBar.OnSeekBarChangeListener {
     private ImageView img;
@@ -117,6 +119,7 @@ public class Binarization extends AppCompatActivity implements View.OnClickListe
         if (view.getId() == R.id.nextStep) {
             Intent intent = new Intent(Binarization.this, Recognizer.class);
             startActivity(intent);
+            CustomIntent.customType(Binarization.this,"fadein-to-fadeout");
         }
 
     }
