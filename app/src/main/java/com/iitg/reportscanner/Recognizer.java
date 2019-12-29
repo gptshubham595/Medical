@@ -238,13 +238,17 @@ public class Recognizer extends AppCompatActivity implements Toolbar.OnMenuItemC
                 if (task.isSuccessful()) {
 
                     Toast.makeText(Recognizer.this, "Done", Toast.LENGTH_SHORT).show();
+
+                    Intent i=new Intent(Recognizer.this,MainActivity2.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(i);
+
+
                 }
 
             }
         });}catch (Exception e){
-        Intent i = new Intent(getApplicationContext(), MainActivity2.class);
-        startActivity(i);
-        CustomIntent.customType(Recognizer.this, "fadein-to-fadeout");
+            Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show();
     }}
 
 

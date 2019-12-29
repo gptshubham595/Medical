@@ -47,7 +47,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".EditAcitivity"></activity>
+        <activity android:name=".GraphPlot"></activity>
+        <activity android:name=".EditAcitivity" />
         <activity
             android:name=".spla.Splash1"
             android:parentActivityName=".Splash" />

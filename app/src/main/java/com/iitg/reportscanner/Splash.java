@@ -19,12 +19,12 @@ import com.iitg.reportscanner.spla.Splash1;
 
 import maes.tech.intentanim.CustomIntent;
 
+import static com.iitg.reportscanner.Recognizer.check;
+
 public class Splash extends AppCompatActivity {
     private ProgressDialog mLoginProgress;
 
     private FirebaseAuth mAuth;
-    SharedPreferences prefs=null;
-    Boolean isFirstRun=false;
     private DatabaseReference mUserDatabase,mDatabase;
 
     @Override
@@ -32,14 +32,14 @@ public class Splash extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         FirebaseApp.initializeApp(this);
-        prefs= getSharedPreferences("com.iitg.reportscanner", MODE_PRIVATE);
 
-        isFirstRun=prefs.getBoolean("isFirstRun", true);
+        SharedPreferences settings=getSharedPreferences("prefs",0);
+        boolean firstRun=settings.getBoolean("firstRun",false);
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(isFirstRun){
+                if(firstRun){
                     Toast.makeText(Splash.this, "First time", Toast.LENGTH_SHORT).show();
                     Intent i=new Intent(getApplicationContext(), Splash1.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
