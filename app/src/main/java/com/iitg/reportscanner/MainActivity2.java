@@ -182,7 +182,6 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
             public void run() {
                 vector.clear();
                 arrayList.clear();
-                array.clear();
                 for(Map.Entry<String,Vector<Double>> entry : Med.entrySet()) {
                     arrayList.add(entry.getKey());
                     //Toast.makeText(MainActivity2.this, ""+entry.getValue(), Toast.LENGTH_SHORT).show();
