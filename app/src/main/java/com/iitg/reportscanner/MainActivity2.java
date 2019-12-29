@@ -29,7 +29,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GridLabelRenderer;
-import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.DataPointInterface;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -40,7 +39,6 @@ import org.angmarch.views.NiceSpinner;
 import org.angmarch.views.OnSpinnerItemSelectedListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -104,6 +102,7 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
         putValues("age");
 
         List<String> arrayList = new ArrayList<>();
+        List<String> arrayDate = new ArrayList<>();
         List<String> array=new Vector<>();
         FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
         String uid = current_user.getUid();
@@ -115,6 +114,7 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
+                    arrayDate.add(""+childDataSnapshot.getKey());
                     for (DataSnapshot childDataSnapshot2 : childDataSnapshot.getChildren()) {
                         // "MEDICINE NAME" childDataSnapshot2.getKey()
 
@@ -167,6 +167,7 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
             }
         });
 
+        Vector<Vector<Vector<Double>>> vectorall = new Vector<>();
 
         Vector<Vector<Double>> vector=new Vector<>();
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -174,11 +175,13 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
             public void onRefresh() {
                 vector.clear();
                 arrayList.clear();
-                arrayList.add("---SELECT--");
+                vectorall.clear();
+                arrayList.add("ALL");
                 for(Map.Entry<String,Vector<Double>> entry : Med.entrySet()) {
                     arrayList.add(entry.getKey());
                     vector.add(entry.getValue());
                 }
+                vectorall.add(vector);
 
                 spinner.attachDataSource(arrayList);
 
@@ -193,12 +196,13 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
             public void run() {
                 vector.clear();
                 arrayList.clear();
-                arrayList.add("---SELECT--");
+                vectorall.clear();
+                arrayList.add("ALL");
                 for(Map.Entry<String,Vector<Double>> entry : Med.entrySet()) {
                     arrayList.add(entry.getKey());
-                    //Toast.makeText(MainActivity2.this, ""+entry.getValue(), Toast.LENGTH_SHORT).show();
                     vector.add(entry.getValue());
                 }
+                vectorall.add(vector);
 
                 spinner.attachDataSource(arrayList);
 
@@ -209,11 +213,16 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
             @Override
             public void onItemSelected(NiceSpinner parent, View view, int position1, long id) {
                 graph.removeAllSeries();
-                int position = position1 + 1;
+                Toast.makeText(MainActivity2.this, position1+"", Toast.LENGTH_SHORT).show();
+                int position=position1-1;
+                if(position1==0){
+
+                }
+                else
                 try{
                 ((TextView) view).setTextColor(Color.RED);
 //                units.setText("( "+array.get(position)+" )");
-                String item = parent.getItemAtPosition(position).toString();
+                String item = parent.getItemAtPosition(position+1).toString();
 
                 Toast.makeText(MainActivity2.this, item + ""
                         + vector.get(position), Toast.LENGTH_SHORT).show();
@@ -249,14 +258,19 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
                 series.setOnDataPointTapListener(new OnDataPointTapListener() {
                     @Override
                     public void onTap(Series series, DataPointInterface dataPoint) {
-                        if (dataPoint.getX() == 1)
-                            Toast.makeText(MainActivity2.this, "" + (int) dataPoint.getX() + "st Day" + " , " + dataPoint.getY() + " " + array.get(position), Toast.LENGTH_SHORT).show();
+                        if (dataPoint.getX() == 0)
+                            Toast.makeText(MainActivity2.this, "1st Day" + " , " + dataPoint.getY() + " " + array.get(position), Toast.LENGTH_SHORT).show();
+                        else if (dataPoint.getX() == 1)
+                            Toast.makeText(MainActivity2.this, "2nd Day" + " , " + dataPoint.getY() + " " + array.get(position), Toast.LENGTH_SHORT).show();
                         else if (dataPoint.getX() == 2)
-                            Toast.makeText(MainActivity2.this, "" + (int) dataPoint.getX() + "nd Day" + " , " + dataPoint.getY() + " " + array.get(position), Toast.LENGTH_SHORT).show();
-                        else if (dataPoint.getX() == 3)
-                            Toast.makeText(MainActivity2.this, "" + (int) dataPoint.getX() + "rd Day" + " , " + dataPoint.getY() + " " + array.get(position), Toast.LENGTH_SHORT).show();
-                        else
-                            Toast.makeText(MainActivity2.this, "" + (int) dataPoint.getX() + "th Day" + " , " + dataPoint.getY() + " " + array.get(position), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity2.this, "3rd Day" + " , " + dataPoint.getY() + " " + array.get(position), Toast.LENGTH_SHORT).show();
+                        else {
+                            int x=(int) dataPoint.getX();
+                            x=x+1;
+                            Toast.makeText(MainActivity2.this, "" + x + "th Day" + " , " + dataPoint.getY() + " " + array.get(position), Toast.LENGTH_SHORT).show();
+                        }
+                        Toast.makeText(MainActivity2.this, "" + arrayDate.get(position-1) + " , " + dataPoint.getY() + " " + array.get(position), Toast.LENGTH_SHORT).show();
+
                     }
                 });
                 series.setColor(Color.parseColor("#4fc9dd"));
@@ -265,7 +279,7 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
 
                 graph.addSeries(series);
             }catch (Exception e){e.printStackTrace();
-                    Toast.makeText(MainActivity2.this, "Failed for "+arrayList.get(position), Toast.LENGTH_SHORT).show();}
+                    Toast.makeText(MainActivity2.this, "Failed for "+arrayList.get(position1), Toast.LENGTH_SHORT).show();}
             }
         });
 
