@@ -179,6 +179,7 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
                     arrayList.add(entry.getKey());
                     vector.add(entry.getValue());
                 }
+
                 spinner.attachDataSource(arrayList);
 
                 if (swipe.isRefreshing()) {
@@ -192,11 +193,13 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
             public void run() {
                 vector.clear();
                 arrayList.clear();
+                arrayList.add("---SELECT--");
                 for(Map.Entry<String,Vector<Double>> entry : Med.entrySet()) {
                     arrayList.add(entry.getKey());
                     //Toast.makeText(MainActivity2.this, ""+entry.getValue(), Toast.LENGTH_SHORT).show();
                     vector.add(entry.getValue());
                 }
+
                 spinner.attachDataSource(arrayList);
 
             }
@@ -204,28 +207,29 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
 
         spinner.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener() {
             @Override
-            public void onItemSelected(NiceSpinner parent, View view, int position, long id) {
+            public void onItemSelected(NiceSpinner parent, View view, int position1, long id) {
                 graph.removeAllSeries();
+                int position = position1 + 1;
+                try{
                 ((TextView) view).setTextColor(Color.RED);
 //                units.setText("( "+array.get(position)+" )");
                 String item = parent.getItemAtPosition(position).toString();
 
-                Toast.makeText(MainActivity2.this, item+""
-                        +vector.get(position), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity2.this, item + ""
+                        + vector.get(position), Toast.LENGTH_SHORT).show();
 
                 DataPoint[] dataPoints = new DataPoint[vector.get(position).size()];
-                for(int i=0;i<vector.get(position).size();i++)
-                {
-                    dataPoints[i] = new DataPoint(i,vector.get(position).get(i));
+                for (int i = 0; i < vector.get(position).size(); i++) {
+                    dataPoints[i] = new DataPoint(i, vector.get(position).get(i));
                 }
 
                 LineGraphSeries<DataPoint> series = new LineGraphSeries<>(dataPoints); // This one should be obvious right? :)
                 Double dou = Collections.max(vector.get(position));
 
                 graph.getViewport().setMinX(0);
-                graph.getViewport().setMaxX(vector.get(position).size()+10);
+                graph.getViewport().setMaxX(vector.get(position).size() + 10);
                 graph.getViewport().setMinY(0.0);
-                graph.getViewport().setMaxY(dou+15.0);
+                graph.getViewport().setMaxY(dou + 15.0);
                 graph.getViewport().setScrollable(true); // enables horizontal scrolling
                 graph.getViewport().setScrollableY(true); // enables vertical scrolling
                 graph.getViewport().setScalable(true); // enables horizontal zooming and scrolling
@@ -235,7 +239,7 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
                 graph.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.HORIZONTAL);
 
                 graph.setTitle("Chart");
-                graph.getGridLabelRenderer().setVerticalAxisTitle("( "+array.get(position)+" )");
+                graph.getGridLabelRenderer().setVerticalAxisTitle("( " + array.get(position) + " )");
                 graph.getGridLabelRenderer().setHorizontalAxisTitle("DAYS");
 
                 series.setDrawBackground(true);
@@ -245,14 +249,14 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
                 series.setOnDataPointTapListener(new OnDataPointTapListener() {
                     @Override
                     public void onTap(Series series, DataPointInterface dataPoint) {
-                        if(dataPoint.getX()==1)
-                            Toast.makeText(MainActivity2.this, ""+dataPoint.getX()+"st Day"+" , "+dataPoint.getY()+" "+array.get(position), Toast.LENGTH_SHORT).show();
-                        else if(dataPoint.getX()==2)
-                            Toast.makeText(MainActivity2.this, ""+dataPoint.getX()+"nd Day"+" , "+dataPoint.getY()+" "+array.get(position), Toast.LENGTH_SHORT).show();
-                        else if(dataPoint.getX()==3)
-                            Toast.makeText(MainActivity2.this, ""+dataPoint.getX()+"rd Day"+" , "+dataPoint.getY()+" "+array.get(position), Toast.LENGTH_SHORT).show();
+                        if (dataPoint.getX() == 1)
+                            Toast.makeText(MainActivity2.this, "" + (int) dataPoint.getX() + "st Day" + " , " + dataPoint.getY() + " " + array.get(position), Toast.LENGTH_SHORT).show();
+                        else if (dataPoint.getX() == 2)
+                            Toast.makeText(MainActivity2.this, "" + (int) dataPoint.getX() + "nd Day" + " , " + dataPoint.getY() + " " + array.get(position), Toast.LENGTH_SHORT).show();
+                        else if (dataPoint.getX() == 3)
+                            Toast.makeText(MainActivity2.this, "" + (int) dataPoint.getX() + "rd Day" + " , " + dataPoint.getY() + " " + array.get(position), Toast.LENGTH_SHORT).show();
                         else
-                            Toast.makeText(MainActivity2.this, ""+dataPoint.getX()+"th Day"+" , "+dataPoint.getY()+" "+array.get(position), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity2.this, "" + (int) dataPoint.getX() + "th Day" + " , " + dataPoint.getY() + " " + array.get(position), Toast.LENGTH_SHORT).show();
                     }
                 });
                 series.setColor(Color.parseColor("#4fc9dd"));
@@ -260,7 +264,8 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
 
 
                 graph.addSeries(series);
-
+            }catch (Exception e){e.printStackTrace();
+                    Toast.makeText(MainActivity2.this, "Failed for "+arrayList.get(position), Toast.LENGTH_SHORT).show();}
             }
         });
 
