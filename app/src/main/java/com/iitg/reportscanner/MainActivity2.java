@@ -28,13 +28,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GridLabelRenderer;
+import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.DataPointInterface;
 import com.jjoe64.graphview.series.LineGraphSeries;
+import com.jjoe64.graphview.series.OnDataPointTapListener;
+import com.jjoe64.graphview.series.Series;
 
 import org.angmarch.views.NiceSpinner;
 import org.angmarch.views.OnSpinnerItemSelectedListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -67,6 +73,10 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
         mLoginProgress = new ProgressDialog(this, R.style.dialog);
         spinner = findViewById(R.id.spinner);
         graph = findViewById(R.id.graph);
+        graph.setTitle("Chart");
+        graph.getGridLabelRenderer().setVerticalAxisTitle("units");
+        graph.getGridLabelRenderer().setHorizontalAxisTitle("DAYS");
+
         drawerLayout = findViewById(R.id.drawer);
         toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
@@ -164,7 +174,7 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
             public void onRefresh() {
                 vector.clear();
                 arrayList.clear();
-                array.clear();
+                arrayList.add("---SELECT--");
                 for(Map.Entry<String,Vector<Double>> entry : Med.entrySet()) {
                     arrayList.add(entry.getKey());
                     vector.add(entry.getValue());
@@ -197,18 +207,17 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
             public void onItemSelected(NiceSpinner parent, View view, int position, long id) {
                 graph.removeAllSeries();
                 ((TextView) view).setTextColor(Color.RED);
-                units.setText("( "+array.get(position)+" )");
+//                units.setText("( "+array.get(position)+" )");
                 String item = parent.getItemAtPosition(position).toString();
 
                 Toast.makeText(MainActivity2.this, item+""
-                        +vector.get(0), Toast.LENGTH_SHORT).show();
+                        +vector.get(position), Toast.LENGTH_SHORT).show();
 
                 DataPoint[] dataPoints = new DataPoint[vector.get(position).size()];
                 for(int i=0;i<vector.get(position).size();i++)
                 {
                     dataPoints[i] = new DataPoint(i,vector.get(position).get(i));
                 }
-
 
                 LineGraphSeries<DataPoint> series = new LineGraphSeries<>(dataPoints); // This one should be obvious right? :)
                 Double dou = Collections.max(vector.get(position));
@@ -223,6 +232,33 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
                 graph.getViewport().setScalableY(true); // enables vertical zooming and scrolling
                 graph.getViewport().setYAxisBoundsManual(true);
                 graph.getViewport().setXAxisBoundsManual(true);
+                graph.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.HORIZONTAL);
+
+                graph.setTitle("Chart");
+                graph.getGridLabelRenderer().setVerticalAxisTitle("( "+array.get(position)+" )");
+                graph.getGridLabelRenderer().setHorizontalAxisTitle("DAYS");
+
+                series.setDrawBackground(true);
+                series.setDrawDataPoints(true);
+                series.setDataPointsRadius(10);
+                series.setThickness(2);
+                series.setOnDataPointTapListener(new OnDataPointTapListener() {
+                    @Override
+                    public void onTap(Series series, DataPointInterface dataPoint) {
+                        if(dataPoint.getX()==1)
+                            Toast.makeText(MainActivity2.this, ""+dataPoint.getX()+"st Day"+" , "+dataPoint.getY()+" "+array.get(position), Toast.LENGTH_SHORT).show();
+                        else if(dataPoint.getX()==2)
+                            Toast.makeText(MainActivity2.this, ""+dataPoint.getX()+"nd Day"+" , "+dataPoint.getY()+" "+array.get(position), Toast.LENGTH_SHORT).show();
+                        else if(dataPoint.getX()==3)
+                            Toast.makeText(MainActivity2.this, ""+dataPoint.getX()+"rd Day"+" , "+dataPoint.getY()+" "+array.get(position), Toast.LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(MainActivity2.this, ""+dataPoint.getX()+"th Day"+" , "+dataPoint.getY()+" "+array.get(position), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                series.setColor(Color.parseColor("#4fc9dd"));
+                series.setBackgroundColor(Color.parseColor("#154fc9dd"));
+
+
                 graph.addSeries(series);
 
             }

@@ -40,7 +40,6 @@
 
     <application
         android:allowBackup="true"
-        android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
@@ -51,17 +50,21 @@
         <activity android:name=".EditAcitivity" />
         <activity
             android:name=".spla.Splash1"
+            android:screenOrientation="portrait"
             android:parentActivityName=".Splash" />
         <activity
             android:name=".Help"
+            android:screenOrientation="portrait"
             android:label="@string/app_name"
             android:parentActivityName=".MainActivity2" />
         <activity
             android:name=".Contact"
+            android:screenOrientation="portrait"
             android:label="@string/app_name"
             android:parentActivityName=".MainActivity2" />
         <activity
             android:name=".About"
+            android:screenOrientation="portrait"
             android:label="@string/app_name"
             android:parentActivityName=".MainActivity2" />
         <activity
@@ -69,6 +72,7 @@
             android:theme="@style/AppTheme2" />
         <activity
             android:name=".Splash"
+            android:screenOrientation="portrait"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -82,14 +86,17 @@
             android:parentActivityName=".MainActivity2" />
         <activity
             android:name=".Login"
+            android:screenOrientation="portrait"
             android:label="@string/app_name" />
         <activity
             android:name=".Register"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:parentActivityName=".Login" />
         <activity
             android:name=".Forgot"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:parentActivityName=".Login" />
         <activity
             android:name=".CropAndRotate"
