@@ -170,13 +170,15 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
         Vector<Vector<Vector<Double>>> vectorall = new Vector<>();
 
         Vector<Vector<Double>> vector=new Vector<>();
+
+
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 vector.clear();
                 arrayList.clear();
                 vectorall.clear();
-                arrayList.add("ALL");
+
                 for(Map.Entry<String,Vector<Double>> entry : Med.entrySet()) {
                     arrayList.add(entry.getKey());
                     vector.add(entry.getValue());
@@ -197,7 +199,7 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
                 vector.clear();
                 arrayList.clear();
                 vectorall.clear();
-                arrayList.add("ALL");
+
                 for(Map.Entry<String,Vector<Double>> entry : Med.entrySet()) {
                     arrayList.add(entry.getKey());
                     vector.add(entry.getValue());
@@ -211,18 +213,13 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
 
         spinner.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener() {
             @Override
-            public void onItemSelected(NiceSpinner parent, View view, int position1, long id) {
+            public void onItemSelected(NiceSpinner parent, View view, int position, long id) {
                 graph.removeAllSeries();
-                Toast.makeText(MainActivity2.this, position1+"", Toast.LENGTH_SHORT).show();
-                int position=position1-1;
-                if(position1==0){
 
-                }
-                else
                 try{
                 ((TextView) view).setTextColor(Color.RED);
 //                units.setText("( "+array.get(position)+" )");
-                String item = parent.getItemAtPosition(position+1).toString();
+                String item = parent.getItemAtPosition(position).toString();
 
                 Toast.makeText(MainActivity2.this, item + ""
                         + vector.get(position), Toast.LENGTH_SHORT).show();
@@ -258,18 +255,17 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
                 series.setOnDataPointTapListener(new OnDataPointTapListener() {
                     @Override
                     public void onTap(Series series, DataPointInterface dataPoint) {
-                        if (dataPoint.getX() == 0)
+                        if (dataPoint.getX() == 1)
                             Toast.makeText(MainActivity2.this, "1st Day" + " , " + dataPoint.getY() + " " + array.get(position), Toast.LENGTH_SHORT).show();
-                        else if (dataPoint.getX() == 1)
-                            Toast.makeText(MainActivity2.this, "2nd Day" + " , " + dataPoint.getY() + " " + array.get(position), Toast.LENGTH_SHORT).show();
                         else if (dataPoint.getX() == 2)
+                            Toast.makeText(MainActivity2.this, "2nd Day" + " , " + dataPoint.getY() + " " + array.get(position), Toast.LENGTH_SHORT).show();
+                        else if (dataPoint.getX() == 3)
                             Toast.makeText(MainActivity2.this, "3rd Day" + " , " + dataPoint.getY() + " " + array.get(position), Toast.LENGTH_SHORT).show();
                         else {
                             int x=(int) dataPoint.getX();
-                            x=x+1;
                             Toast.makeText(MainActivity2.this, "" + x + "th Day" + " , " + dataPoint.getY() + " " + array.get(position), Toast.LENGTH_SHORT).show();
                         }
-                        Toast.makeText(MainActivity2.this, "" + arrayDate.get(position-1) + " , " + dataPoint.getY() + " " + array.get(position), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity2.this, "" + arrayDate.get(position) + " , " + dataPoint.getY() + " " + array.get(position), Toast.LENGTH_SHORT).show();
 
                     }
                 });
@@ -279,7 +275,7 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
 
                 graph.addSeries(series);
             }catch (Exception e){e.printStackTrace();
-                    Toast.makeText(MainActivity2.this, "Failed for "+arrayList.get(position1), Toast.LENGTH_SHORT).show();}
+                    Toast.makeText(MainActivity2.this, "Failed for "+arrayList.get(position), Toast.LENGTH_SHORT).show();}
             }
         });
 
