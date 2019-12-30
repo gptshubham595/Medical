@@ -46,8 +46,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".GraphPlot"></activity>
+        <activity android:name=".ScanORInput"/>
         <activity android:name=".EditAcitivity" />
+
+        <activity android:name=".qr.MainActivity" />
+        <activity android:name=".qr.GeneratorActivity" />
+        <activity android:name=".qr.ReaderActivity"
+            />
+        <activity android:name=".qr.CaptureActivityPortrait"
+            android:screenOrientation="portrait"
+            android:stateNotNeeded="true"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
             android:name=".spla.Splash1"
             android:screenOrientation="portrait"
@@ -110,6 +119,7 @@
             android:name=".Recognizer"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:parentActivityName=".MainActivity2" />
+
         <activity
             android:name="com.google.firebase.auth.internal.FederatedSignInActivity"
             android:excludeFromRecents="true"

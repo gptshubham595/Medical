@@ -1,13 +1,23 @@
 package com.iitg.reportscanner;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +29,10 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.blikoon.qrcodescanner.QrCodeActivity;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,6 +41,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.iitg.reportscanner.qr.GeneratorActivity;
+import com.iitg.reportscanner.qr.ReaderActivity;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GridLabelRenderer;
 import com.jjoe64.graphview.series.DataPoint;
@@ -37,15 +53,19 @@ import com.jjoe64.graphview.series.Series;
 
 import org.angmarch.views.NiceSpinner;
 import org.angmarch.views.OnSpinnerItemSelectedListener;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Vector;
 
 import maes.tech.intentanim.CustomIntent;
+
+import static com.koushikdutta.async.AsyncServer.LOGTAG;
 
 public class MainActivity2 extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     DrawerLayout drawerLayout;
@@ -56,12 +76,12 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
     GraphView graph;
     private FirebaseAuth mAuth;
     NiceSpinner spinner;
-    private DatabaseReference mUserDatabase, mDatabase;
+    private DatabaseReference mUserDatabase, mDatabase,mdatakey;
     TextView emailheader, ageheader, nameheader;
     ImageView edit;
     ArrayList<String> arrayListGLOB=new ArrayList<>();
     TextView units;
-
+    final HashMap<String, Vector<Double>> Med = new HashMap<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,23 +128,23 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
         String uid = current_user.getUid();
         mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("Medicines");
 
-        final HashMap<String, Vector<Double>> Med = new HashMap<>();
+
 
         mUserDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
-                    arrayDate.add(""+childDataSnapshot.getKey());
+                    arrayDate.add(""+childDataSnapshot.getKey().toUpperCase());
                     for (DataSnapshot childDataSnapshot2 : childDataSnapshot.getChildren()) {
                         // "MEDICINE NAME" childDataSnapshot2.getKey()
 
                         Vector<Double> vector;
 
-                        if(Med.containsKey(childDataSnapshot2.getKey())) {
-                            vector = Med.get(childDataSnapshot2.getKey());
+                        if(Med.containsKey(childDataSnapshot2.getKey().toUpperCase())) {
+                            vector = Med.get(childDataSnapshot2.getKey().toUpperCase());
                         } else {
                             vector = new Vector();
-                            Med.put(childDataSnapshot2.getKey(), vector);
+                            Med.put(childDataSnapshot2.getKey().toUpperCase(), vector);
                         }
 
                         int space=childDataSnapshot2.getValue().toString().indexOf(" ");
@@ -210,7 +230,23 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
 
             }
         },3000);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                vector.clear();
+                arrayList.clear();
+                vectorall.clear();
 
+                for(Map.Entry<String,Vector<Double>> entry : Med.entrySet()) {
+                    arrayList.add(entry.getKey());
+                    vector.add(entry.getValue());
+                }
+                vectorall.add(vector);
+
+                spinner.attachDataSource(arrayList);
+
+            }
+        },6000);
         spinner.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener() {
             @Override
             public void onItemSelected(NiceSpinner parent, View view, int position, long id) {
@@ -265,7 +301,7 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
                             int x=(int) dataPoint.getX();
                             Toast.makeText(MainActivity2.this, "" + x + "th Day" + " , " + dataPoint.getY() + " " + array.get(position), Toast.LENGTH_SHORT).show();
                         }
-                        Toast.makeText(MainActivity2.this, "" + arrayDate.get(position) + " , " + dataPoint.getY() + " " + array.get(position), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity2.this, "" + arrayDate.get((int)dataPoint.getX()) + " , " + dataPoint.getY() + " " + array.get(position), Toast.LENGTH_SHORT).show();
 
                     }
                 });
@@ -350,9 +386,35 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
                 return true;
 
             case R.id.action_export:
-                return true;
+                String output = MapUtils.mapToString(Med);
+                FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
+                String uid = current_user.getUid().substring(0,6);
+                Random rand = new Random();
+                int rand_int1 = rand.nextInt(100);
+                uid+=rand_int1;
+                mdatakey = FirebaseDatabase.getInstance().getReference().child("Users").child("Share").child(uid);
+                String finalUid = uid;
+                mdatakey.setValue(output).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+//                            Toast.makeText(MainActivity2.this, output, Toast.LENGTH_SHORT).show();
+                            Intent i =new Intent(MainActivity2.this, GeneratorActivity.class);
+                            i.putExtra("qr",output);
+                            i.putExtra("Share", finalUid);
+                            startActivity(i);
+                        }else{
+                            Toast.makeText(MainActivity2.this, "Failed to export", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                 return true;
 
-            case R.id.action_share:
+            case R.id.action_import:
+//                Intent i=new Intent(this, ReaderActivity.class);
+//                startActivity(i);
+                drawerLayout.closeDrawer(Gravity.LEFT);
+                showDialog(this);
                 return true;
 
             case R.id.action_contactus:
@@ -373,5 +435,101 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void showDialog(Activity activity) {
+        final Dialog dialog = new Dialog(activity);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.dialog_scan_import);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        Button scan=dialog.findViewById(R.id.scan);
+        Button codecheck=dialog.findViewById(R.id.codecheck);
+        EditText qrcode=dialog.findViewById(R.id.qrcode);
+        dialog.show();
+
+        codecheck.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String code=qrcode.getText().toString().trim();
+                mdatakey = FirebaseDatabase.getInstance().getReference().child("Users").child("Share");
+                mdatakey.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
+
+                            if(code.equals(childDataSnapshot.getKey().trim())) {
+                                Toast.makeText(activity, "FOUND", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        //Here Med contains all the data
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
+
+            }
+        });
+        scan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+                Intent i = new Intent(MainActivity2.this, QrCodeActivity.class);
+                startActivityForResult( i,101);
+            }
+        });
+
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != Activity.RESULT_OK) {
+            Log.d(LOGTAG, "COULD NOT GET A GOOD RESULT.");
+            if (data == null)
+                return;
+            //Getting the passed result
+            String result = data.getStringExtra("com.blikoon.qrcodescanner.error_decoding_image");
+            if (result != null) {
+                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity2.this).create();
+                alertDialog.setTitle("Scan Error");
+                alertDialog.setMessage("QR Code could not be scanned");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+            }
+            return;
+
+        }
+        if (requestCode == 101) {
+            if (data == null)
+                return;
+            //Getting the passed result
+            String result = data.getStringExtra("com.blikoon.qrcodescanner.got_qr_scan_relult");
+            Log.d("QR", "Have scan result in your app activity :" + result);
+            AlertDialog alertDialog = new AlertDialog.Builder(MainActivity2.this).create();
+            alertDialog.setTitle("Scan result");
+            alertDialog.setMessage(result);
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
+
+        }
     }
 }

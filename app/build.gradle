@@ -121,6 +121,7 @@ dependencies {
     implementation 'com.firebase:firebase-client-android:2.5.2'
     implementation 'com.jjoe64:graphview:4.2.2'
     implementation 'com.github.arcadefire:nice-spinner:1.4.4'
+    implementation project(':qrcodescanner')
 }
 
 apply plugin: 'com.google.gms.google-services'

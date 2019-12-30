@@ -214,7 +214,7 @@ public class Recognizer extends AppCompatActivity implements Toolbar.OnMenuItemC
 
 
 
-                    userMap.put(key+"", ""+glucoseamt);
+                    userMap.put(key.toUpperCase()+"", ""+glucoseamt);
 
                 }
             } catch (Exception e) {
