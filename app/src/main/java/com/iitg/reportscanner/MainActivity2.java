@@ -386,7 +386,7 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
                 return true;
 
             case R.id.action_export:
-                String output = MapUtils.mapToString(Med);
+                String output = MapUtils.mapToString(Med)+"[[DATES="+arrayDate.toString()+"]]"+"[[UNITS="+array.toString()+"]]";
                 FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
                 String uid = current_user.getUid();
                 mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("Share");
@@ -513,7 +513,15 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
 
                                 Toast.makeText(activity, "FOUND", Toast.LENGTH_SHORT).show();
                                 String value=childDataSnapshot.getValue(String.class);
-                                String[] keyValuePairs = value.split("&");
+                                int dates=0,units=0;
+                                try{dates=value.indexOf("[[DATES=");
+                                units=value.indexOf("[[UNITS=");}catch (Exception e){
+                                    Toast.makeText(activity, "FAILED at DATES AND UNITS", Toast.LENGTH_SHORT).show();
+                                }
+
+                                String[] keyValuePairs = value.substring(0,dates).split("&");
+                                String[] keyDATEPairs = value.substring(dates+1,units-1).split(",");
+                                String[] keyUNITPairs = value.substring(units+1,value.length()-1).split(",");
 
                                 for(int i=0;i<keyValuePairs.length;i++)
                                 {   int eq=keyValuePairs[i].indexOf("=");
