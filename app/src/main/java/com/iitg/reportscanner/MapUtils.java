@@ -4,13 +4,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
 public class MapUtils {
-    public static String mapToString(Map<String, Vector<Double>> map) {
+    public static String mapToString(HashMap<String, Vector<Double>> map) {
         StringBuilder stringBuilder = new StringBuilder();
-
+///I HAVE TO ADD DATE
         for (String key : map.keySet()) {
             if (stringBuilder.length() > 0) {
                 stringBuilder.append("&");

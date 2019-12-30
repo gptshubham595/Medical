@@ -30,7 +30,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.blikoon.qrcodescanner.QrCodeActivity;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
@@ -42,7 +41,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.iitg.reportscanner.qr.GeneratorActivity;
-import com.iitg.reportscanner.qr.ReaderActivity;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GridLabelRenderer;
 import com.jjoe64.graphview.series.DataPoint;
@@ -53,8 +51,9 @@ import com.jjoe64.graphview.series.Series;
 
 import org.angmarch.views.NiceSpinner;
 import org.angmarch.views.OnSpinnerItemSelectedListener;
-import org.json.JSONObject;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -82,6 +81,10 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
     ArrayList<String> arrayListGLOB=new ArrayList<>();
     TextView units;
     final HashMap<String, Vector<Double>> Med = new HashMap<>();
+    List<String> arrayList = new ArrayList<>();
+    List<String> arrayDate = new ArrayList<>();
+    List<String> array=new Vector<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,9 +124,6 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
         putValues("name");
         putValues("age");
 
-        List<String> arrayList = new ArrayList<>();
-        List<String> arrayDate = new ArrayList<>();
-        List<String> array=new Vector<>();
         FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
         String uid = current_user.getUid();
         mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("Medicines");
@@ -388,10 +388,33 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
             case R.id.action_export:
                 String output = MapUtils.mapToString(Med);
                 FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
-                String uid = current_user.getUid().substring(0,6);
+                String uid = current_user.getUid();
+                mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("Share");
+                uid=uid.substring(0,6);
                 Random rand = new Random();
                 int rand_int1 = rand.nextInt(100);
                 uid+=rand_int1;
+                String finalUid1 = uid;
+                mUserDatabase.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        String value=dataSnapshot.getValue(String.class);
+                        value+=","+finalUid1;
+                        mUserDatabase.setValue(value).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                           if(task.isSuccessful())
+                               Toast.makeText(MainActivity2.this, "Done", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
                 mdatakey = FirebaseDatabase.getInstance().getReference().child("Users").child("Share").child(uid);
                 String finalUid = uid;
                 mdatakey.setValue(output).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -405,6 +428,33 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
                             startActivity(i);
                         }else{
                             Toast.makeText(MainActivity2.this, "Failed to export", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                mdatakey = FirebaseDatabase.getInstance().getReference().child("Users").child("Share").child(uid).child("DATES");
+
+                mdatakey.setValue(arrayDate).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+//                            Toast.makeText(MainActivity2.this, output, Toast.LENGTH_SHORT).show();
+
+                        }else{
+                            Toast.makeText(MainActivity2.this, "Failed for dates", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+                mdatakey = FirebaseDatabase.getInstance().getReference().child("Users").child("Share").child(uid).child("UNITS");
+
+                mdatakey.setValue(array).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+//                            Toast.makeText(MainActivity2.this, output, Toast.LENGTH_SHORT).show();
+
+                        }else{
+                            Toast.makeText(MainActivity2.this, "Failed for units", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -452,6 +502,7 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
             @Override
             public void onClick(View v) {
                 String code=qrcode.getText().toString().trim();
+
                 mdatakey = FirebaseDatabase.getInstance().getReference().child("Users").child("Share");
                 mdatakey.addValueEventListener(new ValueEventListener() {
                     @Override
@@ -459,10 +510,32 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
                         for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
 
                             if(code.equals(childDataSnapshot.getKey().trim())) {
+
                                 Toast.makeText(activity, "FOUND", Toast.LENGTH_SHORT).show();
+                                String value=childDataSnapshot.getValue(String.class);
+                                String[] keyValuePairs = value.split("&");
+
+                                for(int i=0;i<keyValuePairs.length;i++)
+                                {   int eq=keyValuePairs[i].indexOf("=");
+                                    String medicine=keyValuePairs[i].substring(0,eq);
+                                    String encodedvector=keyValuePairs[i].substring(eq+1);
+                                    String decodedvector="";
+                                    try{
+                                        //[12,10,15]
+                                        decodedvector= URLDecoder.decode(encodedvector, StandardCharsets.UTF_8.name());
+                                    }
+                                    catch (Exception e){e.printStackTrace();}
+                                    finally{
+                                        HashMap<String ,String> MedImportMap=new HashMap<>();
+                                    //I HAVE TO ADD CODE FOR ADDING IT AS STRING WITH
+                                        //MedImportMap.put("medicine","VALUE");
+                                    }
+
+                                }
+
+                            break;
                             }
                         }
-
                         //Here Med contains all the data
                     }
 
@@ -486,6 +559,7 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
         });
 
     }
+
 
 
     @Override
