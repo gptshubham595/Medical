@@ -312,7 +312,9 @@ TextView email;
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 Toast.makeText(EDITActivity.this, "SAVED", Toast.LENGTH_SHORT).show();
-
+                Intent i=new Intent(EDITActivity.this,MainActivity2.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
             }
         });
         if(str.equals("age"))

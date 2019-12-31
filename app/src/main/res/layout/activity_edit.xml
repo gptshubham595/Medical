@@ -60,6 +60,7 @@
             android:layout_width="match_parent"
             android:drawableRight="@android:drawable/ic_menu_edit"
             android:text="Name"
+            android:singleLine="true"
             android:inputType="textPersonName"
             android:gravity="center"
             android:textSize="20sp"
@@ -122,6 +123,8 @@
                 android:gravity="center"
                 android:paddingLeft="27dp"
                 android:textSize="20sp"
+                android:singleLine="true"
+
                 android:id="@+id/address"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
@@ -150,6 +153,7 @@
                     android:paddingLeft="27dp"
                     android:textSize="20sp"
                     android:id="@+id/mobile"
+                    android:singleLine="true"
                     android:layout_height="wrap_content"/>
         </LinearLayout>
 
@@ -177,6 +181,13 @@
             android:textSize="20sp"
             android:gravity="center"
             android:paddingLeft="18dp"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:freezesText="true"
             android:id="@+id/email"
             android:layout_height="wrap_content"/>
         </LinearLayout>
@@ -186,10 +197,11 @@
         android:layout_width="wrap_content"
         android:text="SAVE DETAILS"
         android:layout_below="@id/content"
-        android:layout_marginTop="45dp"
         android:background="@drawable/shape2"
         android:backgroundTint="#673AB7"
         android:gravity="center"
+        android:layout_margin="50dp"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:id="@+id/btn"
         android:textColor="#ffffff"
