@@ -20,7 +20,7 @@
                 android:layout_height="80dp"
                 android:layout_marginLeft="12dp"
                 android:layout_marginTop="12dp"
-                android:src="@drawable/blur" />
+                android:src="@mipmap/user" />
             <ImageView
                 android:layout_width="60dp"
                 android:layout_height="30dp"

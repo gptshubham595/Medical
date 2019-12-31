@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.github.vivchar.viewpagerindicator.ViewPagerIndicator;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.iitg.reportscanner.Login;

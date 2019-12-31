@@ -6,8 +6,11 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -52,6 +55,7 @@ import com.jjoe64.graphview.series.Series;
 import org.angmarch.views.NiceSpinner;
 import org.angmarch.views.OnSpinnerItemSelectedListener;
 
+import java.io.File;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -64,7 +68,6 @@ import java.util.Vector;
 
 import maes.tech.intentanim.CustomIntent;
 
-import static com.koushikdutta.async.AsyncServer.LOGTAG;
 
 public class MainActivity2 extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     DrawerLayout drawerLayout;
@@ -107,16 +110,16 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
         toggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
         View headerView = navigationView.getHeaderView(0);
         nameheader = headerView.findViewById(R.id.name);
         emailheader = headerView.findViewById(R.id.email);
         ageheader = headerView.findViewById(R.id.age);
         edit = headerView.findViewById(R.id.edit);
+
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i=new Intent(getApplicationContext(),EditAcitivity.class);
+                Intent i=new Intent(getApplicationContext(),EDITActivity.class);
                 startActivity(i);
             }
         });
@@ -391,30 +394,14 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
                 String uid = current_user.getUid();
                 mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("Share");
                 uid=uid.substring(0,6);
-                Random rand = new Random();
-                int rand_int1 = rand.nextInt(100);
-                uid+=rand_int1;
                 String finalUid1 = uid;
-                mUserDatabase.addValueEventListener(new ValueEventListener() {
+                mUserDatabase.setValue(finalUid1).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        String value=dataSnapshot.getValue(String.class);
-                        value+=","+finalUid1;
-                        mUserDatabase.setValue(value).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                           if(task.isSuccessful())
-                               Toast.makeText(MainActivity2.this, "Done", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful())
+                            Toast.makeText(MainActivity2.this, "Done", Toast.LENGTH_SHORT).show();
                     }
                 });
-
                 mdatakey = FirebaseDatabase.getInstance().getReference().child("Users").child("Share").child(uid);
                 String finalUid = uid;
                 mdatakey.setValue(output).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -431,33 +418,7 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
                         }
                     }
                 });
-                mdatakey = FirebaseDatabase.getInstance().getReference().child("Users").child("Share").child(uid).child("DATES");
 
-                mdatakey.setValue(arrayDate).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if(task.isSuccessful()){
-//                            Toast.makeText(MainActivity2.this, output, Toast.LENGTH_SHORT).show();
-
-                        }else{
-                            Toast.makeText(MainActivity2.this, "Failed for dates", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-
-                mdatakey = FirebaseDatabase.getInstance().getReference().child("Users").child("Share").child(uid).child("UNITS");
-
-                mdatakey.setValue(array).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if(task.isSuccessful()){
-//                            Toast.makeText(MainActivity2.this, output, Toast.LENGTH_SHORT).show();
-
-                        }else{
-                            Toast.makeText(MainActivity2.this, "Failed for units", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
                  return true;
 
             case R.id.action_import:
@@ -467,9 +428,8 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
                 showDialog(this);
                 return true;
 
-            case R.id.action_contactus:
-                startActivity(new Intent(this, Contact.class));
-                CustomIntent.customType(MainActivity2.this, "fadein-to-fadeout");
+            case R.id.action_shareapp:
+                shareapp();
                 return true;
 
             case R.id.action_help:
@@ -486,6 +446,21 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    private void shareapp() {
+        try {
+            PackageManager pm = getPackageManager();
+            ApplicationInfo ai = pm.getApplicationInfo(getPackageName(), 0);
+            File srcFile = new File(ai.publicSourceDir);
+            Intent share = new Intent();
+            share.setAction(Intent.ACTION_SEND);
+            share.setType("application/vnd.android.package-archive");
+            share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(srcFile));
+            startActivity(Intent.createChooser(share, "iReport"));
+        } catch (Exception e) {
+            Log.e("ShareApp", e.getMessage());
+        }
+        }
 
     private void showDialog(Activity activity) {
         final Dialog dialog = new Dialog(activity);
@@ -575,7 +550,7 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
 
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != Activity.RESULT_OK) {
-            Log.d(LOGTAG, "COULD NOT GET A GOOD RESULT.");
+            Log.d("", "COULD NOT GET A GOOD RESULT.");
             if (data == null)
                 return;
             //Getting the passed result

@@ -116,6 +116,8 @@ public class Register extends AppCompatActivity {
                     userMap.put("status", "Hi there I'm using iReport App.");
                     userMap.put("image", "default");
                     userMap.put("age", "" + age);
+                    userMap.put("address", "default");
+                    userMap.put("mobile", "default");
                     userMap.put("thumb_image", "default");
                     userMap.put("device_token", device_token);
 

@@ -28,14 +28,13 @@
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_SMS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
-
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="18"/>
     <dist:module dist:instant="true" />
 
     <application
@@ -46,13 +45,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ScanORInput"/>
-        <activity android:name=".EditAcitivity" />
-
+        <activity android:name=".EDITActivity" />
         <activity android:name=".qr.MainActivity" />
         <activity android:name=".qr.GeneratorActivity" />
-        <activity android:name=".qr.ReaderActivity"
-            />
+        <activity android:name=".qr.ReaderActivity" />
+        <activity
+            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat" />
         <activity android:name=".qr.CaptureActivityPortrait"
             android:screenOrientation="portrait"
             android:stateNotNeeded="true"
@@ -129,8 +128,16 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             tools:replace="android:launchMode" />
 
-        <service android:name="com.google.firebase.components.ComponentDiscoveryService" />
 
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.iitg.reportscanner"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
         <meta-data
             android:name="com.google.firebase.components:com.google.firebase.auth.FirebaseAuthRegistrar"
             android:value="com.google.firebase.components.ComponentRegistrar" />
