@@ -51,6 +51,9 @@ import com.jjoe64.graphview.series.DataPointInterface;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.OnDataPointTapListener;
 import com.jjoe64.graphview.series.Series;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
 
 import org.angmarch.views.NiceSpinner;
 import org.angmarch.views.OnSpinnerItemSelectedListener;
@@ -66,6 +69,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Vector;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import maes.tech.intentanim.CustomIntent;
 
 
@@ -80,6 +84,7 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
     NiceSpinner spinner;
     private DatabaseReference mUserDatabase, mDatabase,mdatakey;
     TextView emailheader, ageheader, nameheader;
+    CircleImageView imageheader;
     ImageView edit;
     ArrayList<String> arrayListGLOB=new ArrayList<>();
     TextView units;
@@ -114,6 +119,7 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
         nameheader = headerView.findViewById(R.id.name);
         emailheader = headerView.findViewById(R.id.email);
         ageheader = headerView.findViewById(R.id.age);
+        imageheader=headerView.findViewById(R.id.profile_pic);
         edit = headerView.findViewById(R.id.edit);
 
         edit.setOnClickListener(new View.OnClickListener() {
@@ -126,6 +132,7 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
         //Also Email
         putValues("name");
         putValues("age");
+        putValues("thumb_image");
 
         FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
         String uid = current_user.getUid();
@@ -334,8 +341,29 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
                 String value = dataSnapshot.getValue(String.class);
                 if (name.equals("name")) {
                     nameheader.setText(value);
-                } else {
+                }
+                if(name.equals("age"))
+                {
                     ageheader.setText("Age : " + value + " Y");
+                }
+                if(name.equals("thumb_image")){
+                    if(!value.equals("default")) {
+
+                        Picasso.get().load(value).networkPolicy(NetworkPolicy.OFFLINE)
+                                .placeholder(R.mipmap.user).into(imageheader, new Callback() {
+                            @Override
+                            public void onSuccess() {
+
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+                                Picasso.get().load(value).placeholder(R.mipmap.user).into(imageheader);
+                            }
+
+                        });
+
+                    }
                 }
 
             }
