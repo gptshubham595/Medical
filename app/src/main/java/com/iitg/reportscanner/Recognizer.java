@@ -20,7 +20,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,10 +43,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Date;
 import java.util.HashMap;
-
-import maes.tech.intentanim.CustomIntent;
 
 //import com.google.android.gms.ads.AdView;
 
@@ -86,14 +82,14 @@ public class Recognizer extends AppCompatActivity implements Toolbar.OnMenuItemC
         next.setClickable(true);
 
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setOnMenuItemClickListener(this);
         ViewCompat.setElevation(toolbar, 10);
-        ViewCompat.setElevation((LinearLayout) findViewById(R.id.extension), 10);
+        ViewCompat.setElevation(findViewById(R.id.extension), 10);
         textView = findViewById(R.id.textExtracted);
         textView.setMovementMethod(new ScrollingMovementMethod());
-        search = (EditText) findViewById(R.id.search_text);
+        search = findViewById(R.id.search_text);
         // Setting progress dialog for copy job.
         progressCopy = new ProgressDialog(Recognizer.this);
         progressCopy.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -130,8 +126,8 @@ public class Recognizer extends AppCompatActivity implements Toolbar.OnMenuItemC
                 textView.setText(FINALTOSTORE);
 
 
-                if (!ett.toString().isEmpty()) {
-                    int ofe = tvt.toLowerCase().indexOf(ett.toLowerCase(), 0);
+                if (!ett.isEmpty()) {
+                    int ofe = tvt.toLowerCase().indexOf(ett.toLowerCase());
                     Spannable WordtoSpan = new SpannableString(textView.getText());
                     for (int ofs = 0; ofs < tvt.length() && ofe != -1; ofs = ofe + 1) {
                         ofe = tvt.toLowerCase().indexOf(ett.toLowerCase(), ofs);
@@ -155,9 +151,7 @@ public class Recognizer extends AppCompatActivity implements Toolbar.OnMenuItemC
 
 
     boolean isdig(char str) {
-        if (str >= '0' && str <= '9')
-            return true;
-        return false;
+        return str >= '0' && str <= '9';
     }
 
     private void sendDataToFirebase(String finaltostore) {
@@ -212,9 +206,7 @@ public class Recognizer extends AppCompatActivity implements Toolbar.OnMenuItemC
                             .replaceAll("\\}", "");
 
 
-
-
-                    userMap.put(key.toUpperCase()+"", ""+glucoseamt);
+                    userMap.put(key.toUpperCase() + "", "" + glucoseamt);
 
                 }
             } catch (Exception e) {
@@ -227,29 +219,31 @@ public class Recognizer extends AppCompatActivity implements Toolbar.OnMenuItemC
 
         FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
         String uid = current_user.getUid();
-        long millis=System.currentTimeMillis();
-        java.sql.Date date=new java.sql.Date(millis);
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("Medicines").child(""+date);
-        try{
-        mDatabase.setValue(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
+        long millis = System.currentTimeMillis();
+        java.sql.Date date = new java.sql.Date(millis);
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("Medicines").child("" + date);
+        try {
+            mDatabase.setValue(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
 
-                if (task.isSuccessful()) {
+                    if (task.isSuccessful()) {
 
-                    Toast.makeText(Recognizer.this, "Done", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Recognizer.this, "Done", Toast.LENGTH_SHORT).show();
 
-                    Intent i=new Intent(Recognizer.this,MainActivity2.class);
-                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(i);
+                        Intent i = new Intent(Recognizer.this, MainActivity2.class);
+                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(i);
 
+
+                    }
 
                 }
-
-            }
-        });}catch (Exception e){
+            });
+        } catch (Exception e) {
             Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show();
-    }}
+        }
+    }
 
 
     private void recognizeText() {
@@ -319,7 +313,12 @@ public class Recognizer extends AppCompatActivity implements Toolbar.OnMenuItemC
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             progressCopy.cancel();
-            progressOcr.show();
+            try {
+                progressOcr.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(Recognizer.this, "Closed", Toast.LENGTH_SHORT).show();
+            }
 
         }
 
