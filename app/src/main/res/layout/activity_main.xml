@@ -32,7 +32,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#75FF0000"
+        android:background="#C80E4E7D"
         android:minHeight="?android:attr/actionBarSize"
         android:title="@string/app_name"
         app:titleTextColor="@color/colorTitle" />

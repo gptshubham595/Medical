@@ -41,7 +41,7 @@
             android:layout_width="330dp"
             android:visibility="invisible"
             android:id="@+id/data3"
-            android:background="@drawable/medical3"
+            android:background="@drawable/medical"
             android:layout_centerInParent="true"
             android:layout_height="300dp"/>
         <TextView

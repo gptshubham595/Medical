@@ -6,7 +6,7 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:layout_marginTop="-50dp"
     tools:context=".qr.GeneratorActivity">
 
     <TextView
@@ -15,7 +15,7 @@
         android:textStyle="bold"
         android:textColor="#000000"
         android:layout_above="@id/lin"
-        android:layout_margin="15dp"
+        android:layout_margin="8dp"
         android:layout_centerHorizontal="true"
         android:layout_height="wrap_content"/>
     <LinearLayout
@@ -26,6 +26,7 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="10dp"
             android:id="@+id/image"/>
     </LinearLayout>
     <TextView
@@ -34,7 +35,7 @@
         android:textStyle="bold"
         android:textColor="#000000"
         android:layout_below="@id/lin"
-        android:layout_margin="15dp"
+        android:layout_margin="8dp"
         android:layout_centerHorizontal="true"
         android:layout_height="wrap_content"/>
     <TextView
