@@ -6,37 +6,41 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.hardware.Camera;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
-import android.view.View;
-
-//import com.google.android.gms.ads.AdView;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.iitg.reportscanner.R;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+//import com.google.android.gms.ads.AdView;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private ProgressDialog mLoginProgress;
-    android.hardware.Camera camera ;
+    android.hardware.Camera camera;
     private FirebaseAuth mAuth;
 
-    private DatabaseReference mUserDatabase,mDatabase;
+    private DatabaseReference mUserDatabase, mDatabase;
 
     private Uri outputFileUri;
     private View mView;
@@ -65,6 +69,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //AdRequest adRequest = new AdRequest.Builder().build();
         //mAdView.loadAd(adRequest);
 
+        if (!isPermissionGranted()) {
+            Toast.makeText(this, "Please allow them!!", Toast.LENGTH_SHORT).show();
+        }
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -118,6 +125,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public boolean isPermissionGranted() {
+
+        if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED) {
+            Log.v("TAG", "Permission is granted");
+            return true;
+        } else {
+
+            Log.v("TAG", "Permission is revoked");
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE}, 101);
+            return false;
+        }
+    }
+
     private void selectImage() {
         final String fname = "img_" + System.currentTimeMillis() + ".jpg";
         final File sdImageMainDirectory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), fname);
@@ -165,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 final boolean isCamera;
                 if (data == null || data.getData() == null) {
                     isCamera = true;
-                    camera = camera.open();
+                    camera = Camera.open();
                 } else {
                     final String action = data.getAction();
                     isCamera = action != null && action.equals(MediaStore.ACTION_IMAGE_CAPTURE);
