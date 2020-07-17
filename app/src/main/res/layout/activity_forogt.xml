@@ -6,11 +6,20 @@
     android:background="#ffffff"
     android:layout_height="match_parent"
     tools:context=".Forgot">
+
     <ImageView
         android:layout_width="match_parent"
         android:background="@drawable/party2"
         android:scaleType="fitXY"
-        android:layout_height="170dp"/>
+        android:id="@+id/party"
+        android:layout_height="170dp" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/party"
+        android:layout_margin="35dp"
+        android:src="@drawable/ireport" />
 
     <com.libizo.CustomEditText
         android:layout_width="match_parent"
