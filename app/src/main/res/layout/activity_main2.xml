@@ -2,61 +2,64 @@
 <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:id="@+id/drawer"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity2">
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:layout_width="match_parent"
         android:id="@+id/swipe"
+        android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <org.angmarch.views.NiceSpinner
+                android:id="@+id/spinner"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_margin="16dp"
+                android:background="@color/colorPrimary" />
+
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/graph"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/units"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="65dp" />
+
+            <TextView
+                android:id="@+id/units"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/spinner"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="8dp"
+                android:text=""
+                android:textColor="#000000"
+                android:textSize="15sp"
+                android:textStyle="bold|italic"
+                android:typeface="serif" />
+        </RelativeLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_gravity="start">
 
-    <org.angmarch.views.NiceSpinner
-        android:layout_width="match_parent"
-        android:layout_margin="16dp"
-        android:id="@+id/spinner"
-        android:background="@color/colorPrimary"
-        android:layout_height="50dp"/>
-    <com.jjoe64.graphview.GraphView
-        android:layout_below="@id/units"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="65dp"
-        android:id="@+id/graph"
-        />
-        <TextView
-            android:layout_width="wrap_content"
-            android:id="@+id/units"
-            android:text=""
-            android:layout_below="@id/spinner"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="8dp"
-            android:textColor="#000000"
-            android:typeface="serif"
-            android:textSize="15sp"
-            android:textStyle="bold|italic"
-            android:layout_height="wrap_content"/>
-    </RelativeLayout>
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_gravity="start"
-        android:layout_height="match_parent">
-
-           <com.google.android.material.navigation.NavigationView
-            android:layout_width="wrap_content"
-            app:headerLayout="@layout/header"
+        <com.google.android.material.navigation.NavigationView
             android:id="@+id/nav"
-               android:background="#650D3D63"
-               android:layout_height="match_parent"
-            app:itemTextColor="@android:color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="#650D3D63"
+            app:headerLayout="@layout/header"
             app:itemIconTint="@android:color/white"
-            app:menu="@menu/menu"
-            /></RelativeLayout>
+            app:itemTextColor="@android:color/white"
+            app:menu="@menu/menu" />
+    </RelativeLayout>
 </androidx.drawerlayout.widget.DrawerLayout>
