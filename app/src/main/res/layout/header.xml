@@ -18,17 +18,18 @@
                 android:id="@+id/profile_pic"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:layout_marginLeft="12dp"
+                android:layout_marginStart="12dp"
                 android:layout_marginTop="12dp"
                 android:src="@mipmap/user" />
+
             <ImageView
                 android:layout_width="60dp"
                 android:layout_height="30dp"
-                android:layout_marginLeft="22dp"
+                android:layout_marginStart="22dp"
                 android:layout_marginTop="52dp"
                 android:id="@+id/edit"
                 android:src="@android:drawable/ic_menu_edit"
-                />
+                android:contentDescription="@string/todo" />
 
         </RelativeLayout>
 
@@ -42,9 +43,9 @@
                 android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
                 android:layout_marginTop="15dp"
-                android:text="XYZ Kumar"
+                android:text="@string/xyz_kumar"
                 android:textColor="#ffffff" />
 
             <TextView
@@ -52,7 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:text="xyzkumar@gmail.com"
+                android:text="@string/xyzkumar_gmail_com"
                 android:textColor="#ffffff" />
 
             <TextView
@@ -60,7 +61,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:text="Age : 18 Y"
+                android:text="@string/age_18_y"
                 android:textColor="#ffffff" />
         </LinearLayout>
     </LinearLayout>
