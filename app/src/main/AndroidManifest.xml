@@ -61,7 +61,7 @@
             android:stateNotNeeded="true"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".spla.Splash1"
+            android:name=".splash.Splash1"
             android:parentActivityName=".Splash"
             android:screenOrientation="portrait" />
         <activity

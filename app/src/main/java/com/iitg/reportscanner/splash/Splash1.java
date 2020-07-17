@@ -1,29 +1,23 @@
-package com.iitg.reportscanner.spla;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
+package com.iitg.reportscanner.splash;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.github.vivchar.viewpagerindicator.ViewPagerIndicator;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.iitg.reportscanner.Login;
-import com.iitg.reportscanner.MainActivity;
 import com.iitg.reportscanner.R;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-import pl.droidsonroids.gif.GifImageButton;
 import pl.droidsonroids.gif.GifImageView;
 
 public class Splash1 extends AppCompatActivity {
@@ -36,14 +30,14 @@ public class Splash1 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash1);
-        data=findViewById(R.id.data);
-        data2=findViewById(R.id.data2);
-        data3=findViewById(R.id.data3);
-        txt=findViewById(R.id.txt);
-        nxt=findViewById(R.id.next);
-        nxt1=findViewById(R.id.skip);
-        mViewPagerIndicator = (ViewPagerIndicator) findViewById(R.id.view_pager_indicator);
-        mViewPager = (ViewPager) findViewById(R.id.view_pager);
+        data = findViewById(R.id.data);
+        data2 = findViewById(R.id.data2);
+        data3 = findViewById(R.id.data3);
+        txt = findViewById(R.id.txt);
+        nxt = findViewById(R.id.next);
+        nxt1 = findViewById(R.id.skip);
+        mViewPagerIndicator = findViewById(R.id.view_pager_indicator);
+        mViewPager = findViewById(R.id.view_pager);
 
         mViewPager.setAdapter(new MyPagerAdapter());
         mViewPagerIndicator.setupWithViewPager(mViewPager);
@@ -52,8 +46,8 @@ public class Splash1 extends AppCompatActivity {
         nxt1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i=new Intent(getApplicationContext(), Login.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                Intent i = new Intent(getApplicationContext(), Login.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(i);
             }
         });

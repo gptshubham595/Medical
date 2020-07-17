@@ -3,50 +3,55 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:layout_marginTop="-50dp"
+    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".qr.GeneratorActivity">
 
     <TextView
+        android:id="@+id/scan"
         android:layout_width="wrap_content"
-        android:text="SCAN THIS! To SHARE"
-        android:textStyle="bold"
-        android:textColor="#000000"
-        android:layout_above="@id/lin"
-        android:layout_margin="8dp"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_height="wrap_content"/>
+        android:layout_margin="18dp"
+        android:text="@string/scan_this_to_share"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
     <LinearLayout
+        android:id="@+id/lin"
         android:layout_width="match_parent"
         android:layout_height="500dp"
-        android:id="@+id/lin"
+        android:layout_below="@id/scan"
         android:layout_centerInParent="true">
+
         <ImageView
+            android:id="@+id/image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="10dp"
-            android:id="@+id/image"/>
+            android:contentDescription="@string/todo" />
     </LinearLayout>
+
     <TextView
         android:layout_width="wrap_content"
-        android:text="OR SAY THIS CODE"
-        android:textStyle="bold"
-        android:textColor="#000000"
+        android:layout_height="wrap_content"
         android:layout_below="@id/lin"
+        android:layout_centerHorizontal="true"
         android:layout_margin="8dp"
-        android:layout_centerHorizontal="true"
-        android:layout_height="wrap_content"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:text=""
-        android:textStyle="bold"
-        android:textSize="20sp"
-        android:id="@+id/code"
+        android:text="@string/or_say_this_code"
         android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@id/lin"
-        android:layout_margin="35dp"
         android:layout_centerHorizontal="true"
-        android:layout_height="wrap_content"/>
+        android:layout_margin="35dp"
+        android:text=""
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 </RelativeLayout>

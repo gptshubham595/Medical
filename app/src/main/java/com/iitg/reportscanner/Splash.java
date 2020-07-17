@@ -1,25 +1,20 @@
 package com.iitg.reportscanner;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
-import android.app.admin.DevicePolicyManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.iitg.reportscanner.spla.Splash1;
+import com.iitg.reportscanner.splash.Splash1;
 
 import maes.tech.intentanim.CustomIntent;
-
-import static com.iitg.reportscanner.Recognizer.check;
 
 public class Splash extends AppCompatActivity {
     private ProgressDialog mLoginProgress;
