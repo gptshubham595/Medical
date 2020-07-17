@@ -5,29 +5,25 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import androidx.core.view.ViewCompat;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatSeekBar;
-import androidx.appcompat.widget.Toolbar;
-
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatSeekBar;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.ViewCompat;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.googlecode.leptonica.android.GrayQuant;
 import com.googlecode.leptonica.android.Pix;
-import com.iitg.reportscanner.R;
 
 import java.util.Arrays;
 
@@ -47,24 +43,24 @@ public class Binarization extends AppCompatActivity implements View.OnClickListe
 
     private FirebaseAuth mAuth;
 
-    private DatabaseReference mUserDatabase,mDatabase;
+    private DatabaseReference mUserDatabase, mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.binarization);
         mAuth = FirebaseAuth.getInstance();
-        mLoginProgress = new ProgressDialog(this,R.style.dialog);
+        mLoginProgress = new ProgressDialog(this, R.style.dialog);
         mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ViewCompat.setElevation(toolbar, 10);
-        ViewCompat.setElevation((LinearLayout) findViewById(R.id.extension), 10);
-        spinner = (Spinner) findViewById(R.id.language);
+        ViewCompat.setElevation(findViewById(R.id.extension), 10);
+        spinner = findViewById(R.id.language);
 
-        img = (ImageView) findViewById(R.id.croppedImage);
-        fab = (FloatingActionButton) findViewById(R.id.nextStep);
+        img = findViewById(R.id.croppedImage);
+        fab = findViewById(R.id.nextStep);
         fab.setOnClickListener(this);
         pix = com.googlecode.leptonica.android.ReadFile.readBitmap(CropAndRotate.croppedImage);
 
@@ -88,7 +84,7 @@ public class Binarization extends AppCompatActivity implements View.OnClickListe
         threshold += 20;
         umbralization = com.googlecode.leptonica.android.WriteFile.writeBitmap(GrayQuant.pixThresholdToBinary(pix, threshold));
         img.setImageBitmap(umbralization);
-        seekBar = (AppCompatSeekBar) findViewById(R.id.umbralization);
+        seekBar = findViewById(R.id.umbralization);
         seekBar.setProgress(Integer.valueOf((50 * threshold) / 254));
         seekBar.setOnSeekBarChangeListener(this);
 
@@ -119,7 +115,7 @@ public class Binarization extends AppCompatActivity implements View.OnClickListe
         if (view.getId() == R.id.nextStep) {
             Intent intent = new Intent(Binarization.this, Recognizer.class);
             startActivity(intent);
-            CustomIntent.customType(Binarization.this,"fadein-to-fadeout");
+            CustomIntent.customType(Binarization.this, "fadein-to-fadeout");
         }
 
     }

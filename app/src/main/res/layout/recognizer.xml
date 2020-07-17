@@ -21,9 +21,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:hint="Search"
+            android:hint="@string/search"
             android:textColor="@color/colorTitle"
-            android:textColorHint="@color/colorTitle"
+            android:textColorHint="#650D3D63"
             android:textSize="18sp" />
     </LinearLayout>
 
