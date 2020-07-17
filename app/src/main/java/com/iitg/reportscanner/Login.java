@@ -24,6 +24,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.util.Objects;
+
 import maes.tech.intentanim.CustomIntent;
 
 public class Login extends AppCompatActivity {
@@ -31,9 +33,9 @@ public class Login extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
 
-    private DatabaseReference mUserDatabase, mDatabase;
-    AppCompatButton login, register;
-    EditText email, pswd;
+    AppCompatButton login;
+    EditText email, password;
+    private DatabaseReference mUserDatabase;
     private ProgressBar loginProgressBar;
 
     @Override
@@ -49,18 +51,19 @@ public class Login extends AppCompatActivity {
         mUserDatabase = mUserDatabase.child("Users");
 
         email = findViewById(R.id.email);
-        pswd = findViewById(R.id.password);
+        password = findViewById(R.id.password);
 
         login = findViewById(R.id.login);
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (TextUtils.isEmpty(email.getText().toString())) email.setError("Enter Email");
-                if (TextUtils.isEmpty(pswd.getText().toString())) pswd.setError("Enter Password");
-                if (pswd.getText().toString().length() < 6) pswd.setError("Min 6 digits");
-                if (!TextUtils.isEmpty(email.getText().toString()) && !TextUtils.isEmpty(pswd.getText().toString()) && pswd.getText().toString().length() >= 6) {
+                if (TextUtils.isEmpty(password.getText().toString()))
+                    password.setError("Enter Password");
+                if (password.getText().toString().length() < 6) password.setError("Min 6 digits");
+                if (!TextUtils.isEmpty(email.getText().toString()) && !TextUtils.isEmpty(password.getText().toString()) && password.getText().toString().length() >= 6) {
                     loginProgressBar.setVisibility(View.VISIBLE);
-                    loginUser(email.getText().toString(), pswd.getText().toString());
+                    loginUser(email.getText().toString(), password.getText().toString());
                 }
             }
         });
@@ -75,15 +78,14 @@ public class Login extends AppCompatActivity {
                     }
                 }
         );
-        findViewById(R.id.forgot).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent i = new Intent(getApplicationContext(), Forgot.class);
-                        startActivity(i);
-                        CustomIntent.customType(Login.this,"fadein-to-fadeout");
-                    }
-                }
+        findViewById(R.id.forgot).setOnClickListener(new View.OnClickListener() {
+                                                         @Override
+                                                         public void onClick(View v) {
+                                                             Intent i = new Intent(getApplicationContext(), Forgot.class);
+                                                             startActivity(i);
+                                                             CustomIntent.customType(Login.this, "fadein-to-fadeout");
+                                                         }
+                                                     }
         );
     }
 
@@ -99,7 +101,7 @@ public class Login extends AppCompatActivity {
 
                         mLoginProgress.dismiss();
 
-                        String current_user_id = mAuth.getCurrentUser().getUid();
+                        String current_user_id = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
                         String deviceToken = FirebaseInstanceId.getInstance().getToken();
 
                         mUserDatabase.child(current_user_id).child("device_token").setValue(deviceToken).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -124,7 +126,7 @@ public class Login extends AppCompatActivity {
                         loginProgressBar.setVisibility(View.INVISIBLE);
                         mLoginProgress.hide();
 
-                        String task_result = task.getException().getMessage().toString();
+                        String task_result = Objects.requireNonNull(task.getException()).getMessage();
 
                         Toast.makeText(getApplicationContext(), "Error : " + task_result, Toast.LENGTH_LONG).show();
 
@@ -134,6 +136,7 @@ public class Login extends AppCompatActivity {
             });
         } catch (Exception e) {
             e.printStackTrace();
+            Toast.makeText(this, "ERR:" + e, Toast.LENGTH_SHORT).show();
         }
     }
 
