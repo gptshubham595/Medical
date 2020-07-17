@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Medical.iml" filepath="$PROJECT_DIR$/.idea/modules/Medical.iml" group="Medical" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Medical-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Medical-app.iml" group="Medical/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/qrcodescanner/Medical-qrcodescanner.iml" filepath="$PROJECT_DIR$/.idea/modules/qrcodescanner/Medical-qrcodescanner.iml" group="Medical/qrcodescanner" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/qrcodescanner/qrcodescanner.iml" filepath="$PROJECT_DIR$/qrcodescanner/qrcodescanner.iml" />
       <module fileurl="file://$PROJECT_DIR$/text-scanner-master.iml" filepath="$PROJECT_DIR$/text-scanner-master.iml" />

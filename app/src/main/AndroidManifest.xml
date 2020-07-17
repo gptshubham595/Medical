@@ -34,7 +34,10 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="18"/>
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18" />
+
     <dist:module dist:instant="true" />
 
     <application
@@ -52,36 +55,37 @@
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
-        <activity android:name=".qr.CaptureActivityPortrait"
+        <activity
+            android:name=".qr.CaptureActivityPortrait"
             android:screenOrientation="portrait"
             android:stateNotNeeded="true"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".spla.Splash1"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".Splash" />
+            android:parentActivityName=".Splash"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Help"
-            android:screenOrientation="portrait"
             android:label="@string/app_name"
-            android:parentActivityName=".MainActivity2" />
+            android:parentActivityName=".MainActivity2"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Contact"
-            android:screenOrientation="portrait"
             android:label="@string/app_name"
-            android:parentActivityName=".MainActivity2" />
+            android:parentActivityName=".MainActivity2"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".About"
-            android:screenOrientation="portrait"
             android:label="@string/app_name"
-            android:parentActivityName=".MainActivity2" />
+            android:parentActivityName=".MainActivity2"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".MainActivity2"
             android:theme="@style/AppTheme2" />
         <activity
             android:name=".Splash"
-            android:screenOrientation="portrait"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -94,18 +98,18 @@
             android:parentActivityName=".MainActivity2" />
         <activity
             android:name=".Login"
-            android:screenOrientation="portrait"
-            android:label="@string/app_name" />
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Register"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".Login" />
+            android:parentActivityName=".Login"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Forgot"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".Login" />
+            android:parentActivityName=".Login"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".CropAndRotate"
             android:label="@string/app_name"
@@ -118,7 +122,6 @@
             android:name=".Recognizer"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:parentActivityName=".MainActivity2" />
-
         <activity
             android:name="com.google.firebase.auth.internal.FederatedSignInActivity"
             android:excludeFromRecents="true"
@@ -127,7 +130,6 @@
             android:permission="com.google.firebase.auth.api.gms.permission.LAUNCH_FEDERATED_SIGN_IN"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             tools:replace="android:launchMode" />
-
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -138,6 +140,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+
         <meta-data
             android:name="com.google.firebase.components:com.google.firebase.auth.FirebaseAuthRegistrar"
             android:value="com.google.firebase.components.ComponentRegistrar" />

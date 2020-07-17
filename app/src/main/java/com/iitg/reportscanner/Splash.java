@@ -45,8 +45,8 @@ public class Splash extends AppCompatActivity {
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(i);
                  }else{
-                Intent i=new Intent(getApplicationContext(), Login.class);
-              //  Intent i=new Intent(getApplicationContext(), Splash1.class);
+//                Intent i=new Intent(getApplicationContext(), Login.class);
+                Intent i=new Intent(getApplicationContext(), Splash1.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(i);
                     CustomIntent.customType(Splash.this,"fadein-to-fadeout");
