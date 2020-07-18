@@ -9,15 +9,17 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:background="@drawable/party2"
+        android:background="@drawable/party"
         android:scaleType="fitXY"
         android:id="@+id/party"
+        android:contentDescription="@string/todo"
         android:layout_height="170dp" />
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/party"
+        android:contentDescription="@string/todo"
         android:layout_margin="35dp"
         android:src="@drawable/ireport" />
 
@@ -27,7 +29,7 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:inputType="textEmailAddress"
-        android:hint="abc@gmail.com"
+        android:hint="@string/abc_gmail_com"
         app:libIZO_setPrefix=" "
         android:textColorHint="@color/colorPrimaryDark"
         android:gravity="center"
@@ -52,7 +54,7 @@
         android:layout_marginRight="8dp"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="90dp"
-        android:text="SEND PASSWORD RESET LINK"
+        android:text="@string/send_password_reset_link"
         android:id="@+id/forgot"
         android:textStyle="bold"
         android:textColor="#FFFFFF"

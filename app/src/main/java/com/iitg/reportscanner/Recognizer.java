@@ -23,14 +23,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -59,12 +56,10 @@ public class Recognizer extends AppCompatActivity implements Toolbar.OnMenuItemC
     TessBaseAPI baseApi;
     AsyncTask<Void, Void, Void> copy = new copyTask();
     AsyncTask<Void, Void, Void> ocr = new ocrTask();
-    //private AdView mAdView;
-    private ProgressDialog mLoginProgress;
 
     private FirebaseAuth mAuth;
 
-    private DatabaseReference mUserDatabase, mDatabase;
+    private DatabaseReference mDatabase;
 
     private static final String DATA_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/com.iitg.reportscanner/";
 
@@ -74,8 +69,9 @@ public class Recognizer extends AppCompatActivity implements Toolbar.OnMenuItemC
         setContentView(R.layout.recognizer);
         next = findViewById(R.id.next);
         mAuth = FirebaseAuth.getInstance();
-        mLoginProgress = new ProgressDialog(this, R.style.dialog);
-        mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
+        //private AdView mAdView;
+        ProgressDialog mLoginProgress = new ProgressDialog(this, R.style.dialog);
+        DatabaseReference mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
 
         Toast.makeText(Recognizer.this, "WAIT CHECK IF Texts are Correct", Toast.LENGTH_LONG).show();
         next.setFocusable(false);
@@ -200,10 +196,31 @@ public class Recognizer extends AppCompatActivity implements Toolbar.OnMenuItemC
                             .replaceAll(" ", "")
                             .replaceAll(",", "")
                             .replaceAll("\\[", "")
-                            .replaceAll("\\]", "")
+                            .replaceAll("]", "")
                             .replaceAll("@", "")
                             .replaceAll("\\{", "")
-                            .replaceAll("\\}", "");
+                            .replaceAll("'", "")
+                            .replaceAll("'", "")
+                            .replaceAll("\"", "")
+                            .replaceAll("#", "")
+                            .replaceAll("$", "")
+                            .replaceAll("%", "")
+                            .replaceAll("^", "")
+                            .replaceAll("&", "")
+                            .replaceAll("\\*", "")
+                            .replaceAll("\\|", "")
+                            .replaceAll(":", "")
+                            .replaceAll(";", "")
+                            .replaceAll("<", "")
+                            .replaceAll(">", "")
+                            .replaceAll("\\?", "")
+                            .replaceAll("/", "")
+                            .replaceAll("~", "")
+                            .replaceAll("-", "")
+                            .replaceAll("_", "")
+                            .replaceAll("=", "")
+                            .replaceAll("\\+", "")
+                            .replaceAll("}", "");
 
 
                     userMap.put(key.toUpperCase() + "", "" + glucoseamt);
@@ -223,22 +240,19 @@ public class Recognizer extends AppCompatActivity implements Toolbar.OnMenuItemC
         java.sql.Date date = new java.sql.Date(millis);
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("Medicines").child("" + date);
         try {
-            mDatabase.setValue(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
+            mDatabase.setValue(userMap).addOnCompleteListener(task -> {
 
-                    if (task.isSuccessful()) {
+                if (task.isSuccessful()) {
 
-                        Toast.makeText(Recognizer.this, "Done", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Recognizer.this, "Done", Toast.LENGTH_SHORT).show();
 
-                        Intent i = new Intent(Recognizer.this, MainActivity2.class);
-                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(i);
+                    Intent i = new Intent(Recognizer.this, MainActivity2.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(i);
 
-
-                    }
 
                 }
+
             });
         } catch (Exception e) {
             Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show();
@@ -251,7 +265,7 @@ public class Recognizer extends AppCompatActivity implements Toolbar.OnMenuItemC
         if (Binarization.language == 0)
             language = "eng";
         else
-            language = "spa";
+            language = "hin";
 
         baseApi = new TessBaseAPI();
         baseApi.init(DATA_PATH, language, TessBaseAPI.OEM_TESSERACT_ONLY);
@@ -294,7 +308,7 @@ public class Recognizer extends AppCompatActivity implements Toolbar.OnMenuItemC
     }
 
     private void copyFile(InputStream in, OutputStream out) throws IOException {
-        byte[] buffer = new byte[1024];
+        byte[] buffer = new byte[2024];
         int read;
         while ((read = in.read(buffer)) != -1) {
             out.write(buffer, 0, read);

@@ -14,4 +14,11 @@
     <string name="or_say_this_code">OR SAY THIS CODE</string>
     <string name="scan_this_to_share">SCAN OR SHAxKE THIS! To SHARE </string>
     <string name="click_to_upload">Click to UPLOAD</string>
+    <string name="save_details">SAVE DETAILS</string>
+    <string name="abc_gmail_com">abc@gmail.com</string>
+    <string name="send_password_reset_link">SEND PASSWORD RESET LINK</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="register">REGISTER</string>
+    <string name="forgot">FORGOT</string>
 </resources>

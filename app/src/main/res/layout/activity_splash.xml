@@ -11,14 +11,17 @@
         android:layout_width="match_parent"
         android:src="@drawable/party"
         android:scaleType="fitXY"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:tint="#16F1CCCC"
-        android:layout_height="wrap_content"/>
+        android:contentDescription="@string/todo"
+        android:scaleY="-1" />
     <ImageView
         android:layout_width="wrap_content"
         android:src="@drawable/ireport"
         android:id="@+id/logo"
         android:layout_margin="30dp"
         android:layout_centerInParent="true"
+        android:contentDescription="@string/todo"
         android:layout_height="wrap_content"/>
     </RelativeLayout>

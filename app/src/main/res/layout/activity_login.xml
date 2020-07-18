@@ -11,8 +11,9 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:src="@drawable/party2"
+        android:contentDescription="@string/todo"
         android:id="@+id/party"
+        android:src="@drawable/party"
         android:scaleType="fitXY"
         android:layout_height="wrap_content" />
 
@@ -20,6 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/party"
+        android:contentDescription="@string/todo"
         android:layout_marginStart="45dp"
         android:layout_marginEnd="45dp"
         android:src="@drawable/ireport" />
@@ -31,7 +33,7 @@
         android:layout_marginRight="5dp"
         android:id="@+id/email"
         android:inputType="textEmailAddress"
-        android:hint="abc@gmail.com"
+        android:hint="@string/abc_gmail_com"
         app:libIZO_setPrefix=" "
         android:gravity="center"
         android:textColorHint="#650D3D63"
@@ -52,7 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:hint="Password"
+        android:hint="@string/password"
         android:inputType="textPassword"
         app:libIZO_setPrefix=" "
         android:gravity="center"
@@ -78,45 +80,50 @@
         android:layout_marginRight="8dp"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="100dp"
-        android:text="Login"
+        android:text="@string/login"
         android:id="@+id/login"
         android:textStyle="bold"
         android:textColor="#FFF7F7"
-        android:layout_height="40dp"/>
-    <LinearLayout
+        android:layout_height="40dp" />
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:gravity="center"
         android:layout_marginBottom="30dp"
         android:layout_alignParentBottom="true"
         android:layout_height="wrap_content">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:text="REGISTER"
-        android:id="@+id/register"
-        android:textStyle="bold"
-        android:textColor="@color/colorPrimaryDark"
-        android:layout_height="40dp"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:text="                                              "
-        android:textStyle="bold"
-        android:textColor="#FF9800"
-        android:layout_height="40dp"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:text="FORGOT"
-        android:id="@+id/forgot"
-        android:textStyle="bold"
-        android:textColor="@color/colorPrimaryDark"
-        android:layout_height="40dp"/>
-    </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_alignRight="@id/centerline"
+            android:id="@+id/register"
+            android:textStyle="bold"
+            android:layout_marginEnd="80dp"
+            android:text="@string/register"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_height="40dp" />
+
+        <TextView
+            android:id="@+id/centerline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_alignLeft="@id/centerline"
+            android:layout_marginStart="80dp"
+            android:id="@+id/forgot"
+            android:text="@string/forgot"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_height="40dp" />
+    </RelativeLayout>
 
     <ProgressBar
         android:id="@+id/progressLogin"
